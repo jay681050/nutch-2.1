@@ -32,5 +32,8 @@ is available</description>
 Currently the following stores are available: ….
 </description>
 </property>
-
+ <property>
+   <name>plugin.folders</name>
+   <value>/home/shawncao/workspace/apache-nutch-2.1/build/plugins</value>
+ </property>
 </configuration>
