@@ -50,10 +50,8 @@ import org.apache.nutch.util.MimeUtil;
 import org.apache.nutch.util.NutchConfiguration;
 import org.apache.nutch.util.TableUtil;
 import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MimeType;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
-import org.apache.tika.parser.html.HtmlMapper;
 import org.w3c.dom.DocumentFragment;
 
 /**
@@ -215,9 +213,9 @@ public class TikaParser implements org.apache.nutch.parse.Parser {
   }
 
   public TikaConfig getTikaConfig(){
-	  return this.tikaConfig;
+      return this.tikaConfig;
   }
-  
+
   public Configuration getConf() {
     return this.conf;
   }
