@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 public class Crawler extends NutchTool implements Tool {
   private static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
-  
+
   private boolean cleanSeedDir = false;
   private String tmpSeedDir = null;
   private HashMap<String,Object> results = new HashMap<String,Object>();
@@ -56,18 +56,18 @@ public class Crawler extends NutchTool implements Tool {
     Collections.synchronizedMap(new HashMap<String,Object>());
   private NutchTool currentTool = null;
   private boolean shouldStop = false;
-  
+
   @Override
   public Map<String,Object> getStatus() {
     return status;
   }
-  
+
   private Map<String,Object> runTool(Class<? extends NutchTool> toolClass,
       Map<String,Object> args) throws Exception {
     currentTool = (NutchTool)ReflectionUtils.newInstance(toolClass, getConf());
     return currentTool.run(args);
   }
-  
+
   @Override
   public boolean stopJob() throws Exception {
     shouldStop = true;
@@ -90,12 +90,14 @@ public class Crawler extends NutchTool implements Tool {
   public Map<String,Object> run(Map<String, Object> args) throws Exception {
     results.clear();
     status.clear();
+    LOG.debug("run ..");
     String crawlId = (String)args.get(Nutch.ARG_CRAWL);
     if (crawlId != null) {
       getConf().set(Nutch.CRAWL_ID_KEY, crawlId);
+      LOG.debug("generate crawl id ..");
     }
     String seedDir = null;
-    String seedList = (String)args.get(Nutch.ARG_SEEDLIST);    
+    String seedList = (String)args.get(Nutch.ARG_SEEDLIST);
     if (seedList != null) { // takes precedence
       String[] seeds = seedList.split("\\s+");
       // create tmp. dir
@@ -147,6 +149,7 @@ public class Crawler extends NutchTool implements Tool {
       return results;
     }
     // run "depth" cycles
+    LOG.debug("run depth cycle...");
     for (int i = 0; i < depth; i++) {
       status.put(Nutch.STAT_PHASE, "generate " + i);
       jobRes = runTool(GeneratorJob.class, args);
@@ -212,12 +215,12 @@ public class Crawler extends NutchTool implements Tool {
     }
     // parse most common arguments here
     String seedDir = null;
-    int threads = getConf().getInt("fetcher.threads.fetch", 10);    
+    int threads = getConf().getInt("fetcher.threads.fetch", 10);
     int depth = 5;
     long topN = Long.MAX_VALUE;
     String solrUrl = null;
     Integer numTasks = null;
-    
+
     for (int i = 0; i < args.length; i++) {
       if ("-threads".equals(args[i])) {
         threads = Integer.parseInt(args[i+1]);
@@ -227,7 +230,7 @@ public class Crawler extends NutchTool implements Tool {
         i++;
       } else if ("-topN".equals(args[i])) {
           topN = Integer.parseInt(args[i+1]);
-          i++; 
+          i++;
       } else if ("-solr".equals(args[i])) {
         solrUrl = StringUtils.lowerCase(args[i + 1]);
         i++;
@@ -250,10 +253,12 @@ public class Crawler extends NutchTool implements Tool {
     run(argMap);
     return 0;
   }
-  
+
   public static void main(String[] args) throws Exception {
     Crawler c = new Crawler();
+    System.out.println("crawl instance");
     Configuration conf = NutchConfiguration.create();
+    System.out.println("con...");
     int res = ToolRunner.run(conf, c, args);
     System.exit(res);
   }

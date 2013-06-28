@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -154,7 +154,7 @@ public class FetcherJob extends NutchTool implements Tool {
     Integer threads = (Integer)args.get(Nutch.ARG_THREADS);
     Boolean shouldResume = (Boolean)args.get(Nutch.ARG_RESUME);
     Integer numTasks = (Integer)args.get(Nutch.ARG_NUMTASKS);
- 
+
     if (threads != null && threads > 0) {
       getConf().setInt(THREADS_KEY, threads);
     }
@@ -165,7 +165,7 @@ public class FetcherJob extends NutchTool implements Tool {
     if (shouldResume != null) {
       getConf().setBoolean(RESUME_KEY, shouldResume);
     }
-    
+
     LOG.info("FetcherJob: threads: " + getConf().getInt(THREADS_KEY, 10));
     LOG.info("FetcherJob: parsing: " + getConf().getBoolean(PARSE_KEY, false));
     LOG.info("FetcherJob: resuming: " + getConf().getBoolean(RESUME_KEY, false));

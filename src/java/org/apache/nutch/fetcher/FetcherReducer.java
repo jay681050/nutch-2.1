@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -152,8 +152,8 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
       return "FetchItem [queueID=" + queueID + ", url=" + url + ", u=" + u
           + ", page=" + page + "]";
     }
-    
-    
+
+
 
   }
 
@@ -242,7 +242,7 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
       else
         nextFetchTime.set(endTime);
     }
-    
+
     public synchronized int emptyQueue() {
       int presize = queue.size();
       queue.clear();
@@ -265,7 +265,7 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
     long minCrawlDelay;
     Configuration conf;
     long timelimit = -1;
-    
+
     boolean useHostSettings = false;
     HostDb hostDb = null;
 
@@ -284,8 +284,8 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
         queueMode = QUEUE_MODE_HOST;
       }
       LOG.info("Using queue mode : "+queueMode);
-      
-      // Optionally enable host specific queue behavior 
+
+      // Optionally enable host specific queue behavior
       if (queueMode.equals(QUEUE_MODE_HOST)) {
         useHostSettings = conf.getBoolean("fetcher.queue.use.host.settings", false);
         if (useHostSettings) {
@@ -294,7 +294,7 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
           hostDb = new HostDb(conf);
         }
       }
-      
+
       this.crawlDelay = (long) (conf.getFloat("fetcher.server.delay", 1.0f) * 1000);
       this.minCrawlDelay = (long) (conf.getFloat("fetcher.server.min.delay", 0.0f) * 1000);
       this.timelimit = conf.getLong("fetcher.timelimit", -1);
@@ -347,11 +347,11 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
                                        host.getLong("q_cd", crawlDelay),
                                        host.getLong("q_mcd", minCrawlDelay));
             }
-            
+
           } catch (IOException e) {
             LOG.error("Error while trying to access host settings", e);
           }
-        } 
+        }
         if (fiq == null) {
           // Use queue defaults
           fiq = new FetchItemQueue(conf, maxThreads, crawlDelay, minCrawlDelay);
@@ -380,14 +380,14 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
       }
       return null;
     }
-    
+
     public synchronized int checkTimelimit() {
       if (System.currentTimeMillis() >= timelimit && timelimit != -1) {
         return emptyQueues();
       }
       return 0;
     }
-    
+
 
     public synchronized void dump() {
       for (final String id : queues.keySet()) {
@@ -401,7 +401,7 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
     // empties the queues (used by timebomb and throughput threshold)
     public synchronized int emptyQueues() {
       int count = 0;
-      
+
       // emptying the queues
       for (String id : queues.keySet()) {
         FetchItemQueue fiq = queues.get(id);
@@ -489,7 +489,8 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
             // fetch the page
             final Protocol protocol = this.protocolFactory.getProtocol(fit.url);
             final RobotRules rules = protocol.getRobotRules(fit.url, fit.page);
-            if (!rules.isAllowed(fit.u)) {
+            //remove robots protocol check
+        /*    if (!rules.isAllowed(fit.u)) {
               // unblock
               fetchQueues.finishFetchItem(fit, true);
               if (LOG.isDebugEnabled()) {
@@ -498,7 +499,7 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
               output(fit, null, ProtocolStatusUtils.STATUS_ROBOTS_DENIED,
                   CrawlStatus.STATUS_GONE);
               continue;
-            }
+            }*/
             if (rules.getCrawlDelay() > 0) {
               if (rules.getCrawlDelay() > maxCrawlDelay) {
                 // unblock
@@ -624,7 +625,7 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
         }
       }
     }
-    
+
 
     private void updateStatus(int bytesInPage) throws IOException {
       pages.incrementAndGet();
@@ -655,8 +656,8 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
           parseUtil.process(key, fit.page);
         }
       }
-      //remove content if storingContent is false. Content is added to fit.page above 
-      //for ParseUtil be able to parse it. 
+      //remove content if storingContent is false. Content is added to fit.page above
+      //for ParseUtil be able to parse it.
       if(content != null && !storingContent){
         fit.page.setContent(ByteBuffer.wrap(new byte[0]));
       }
@@ -695,7 +696,7 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
         currentIter = context.getValues().iterator();
       }
       // the value of the time limit is either -1 or the time where it should finish
-      timelimit = context.getConfiguration().getLong("fetcher.timelimit", -1); 
+      timelimit = context.getConfiguration().getLong("fetcher.timelimit", -1);
     }
 
     @Override
@@ -754,7 +755,7 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
     }
   }
 
-  private void reportAndLogStatus(Context context, float actualPages, 
+  private void reportAndLogStatus(Context context, float actualPages,
       int actualBytes, int totalSize) throws IOException {
     StringBuilder status = new StringBuilder();
     long elapsed = (System.currentTimeMillis() - start)/1000;
@@ -806,11 +807,11 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
     int throughputThresholdPages = conf.getInt("fetcher.throughput.threshold.pages", -1);
     if (LOG.isInfoEnabled()) { LOG.info("Fetcher: throughput threshold: " + throughputThresholdPages); }
     int throughputThresholdSequence = conf.getInt("fetcher.throughput.threshold.sequence", 5);
-    if (LOG.isInfoEnabled()) { 
-      LOG.info("Fetcher: throughput threshold sequence: " + throughputThresholdSequence); 
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Fetcher: throughput threshold sequence: " + throughputThresholdSequence);
     }
     long throughputThresholdTimeLimit = conf.getLong("fetcher.throughput.threshold.check.after", -1);
-    
+
     do {                                          // wait for threads to exit
       pagesLastSec = pages.get();
       bytesLastSec = (int)bytes.get();
@@ -824,12 +825,12 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
 
       int fetchQueuesTotalSize = fetchQueues.getTotalSize();
       reportAndLogStatus(context, pagesLastSec, bytesLastSec, fetchQueuesTotalSize);
-      
+
       boolean feederAlive = feeder.isAlive();
       if (!feederAlive && fetchQueuesTotalSize < 5) {
         fetchQueues.dump();
       }
-      
+
       // check timelimit
       if (!feederAlive) {
         int hitByTimeLimit = fetchQueues.checkTimelimit();
@@ -837,14 +838,14 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
           context.getCounter("FetcherStatus","HitByTimeLimit-Queues").increment(hitByTimeLimit);
         }
       }
-      
+
       // if throughput threshold is enabled
       if (throughputThresholdTimeLimit < System.currentTimeMillis() && throughputThresholdPages != -1) {
         // Check if we're dropping below the threshold
         if (pagesLastSec < throughputThresholdPages) {
           throughputThresholdCurrentSequence++;
-          LOG.warn(Integer.toString(throughputThresholdCurrentSequence) 
-              + ": dropping below configured threshold of " + Integer.toString(throughputThresholdPages) 
+          LOG.warn(Integer.toString(throughputThresholdCurrentSequence)
+              + ": dropping below configured threshold of " + Integer.toString(throughputThresholdPages)
               + " pages per second");
 
           // Quit if we dropped below threshold too many times
@@ -857,14 +858,14 @@ extends GoraReducer<IntWritable, FetchEntry, String, WebPage> {
             // Empty the queues cleanly and get number of items that were dropped
             int hitByThrougputThreshold = fetchQueues.emptyQueues();
 
-            if (hitByThrougputThreshold != 0) context.getCounter("FetcherStatus", 
+            if (hitByThrougputThreshold != 0) context.getCounter("FetcherStatus",
                 "hitByThrougputThreshold").increment(hitByThrougputThreshold);
           }
         } else {
           throughputThresholdCurrentSequence = 0;
         }
       }
-      
+
       // some requests seem to hang, despite all intentions
       if ((System.currentTimeMillis() - lastRequestStart.get()) > timeout) {
         LOG.warn("Aborting with " + activeThreads + " hung threads.");

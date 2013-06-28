@@ -23,7 +23,7 @@
 <!-- WATCH OUT: an xml parser reads this file an ampersands must be
      expanded to &amp; -->
 
-<!-- The following rules show how to strip out session IDs, default pages, 
+<!-- The following rules show how to strip out session IDs, default pages,
      interpage anchors, etc. Order does matter!  -->
 <regex-normalize>
 
@@ -41,6 +41,11 @@
 
 <!-- removes interpage href anchors such as site.com#location -->
 <regex>
+  <pattern>/((?i)index|default)\.((?i)js[pf]{1}?[afx]?|cgi|cfm|[psx]?|php[3456]?)(\?|&amp;|#|$)</pattern>
+  <substitution>/$3</substitution>
+</regex>
+p=[0-9][^jl=[0-9]*&kw=[.*]&gc=[.*]&ga=[.*]&gr=[0-9]*]
+<regex>
   <pattern>#.*?(\?|&amp;|$)</pattern>
   <substitution>$1</substitution>
 </regex>
@@ -50,6 +55,7 @@
   <pattern>\?&amp;</pattern>
   <substitution>\?</substitution>
 </regex>
+
 
 <!-- cleans multiple sequential ampersands into a single ampersand -->
 <regex>

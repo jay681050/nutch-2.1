@@ -6,7 +6,7 @@
 <configuration>
 <property>
 <name>http.agent.name</name>
-<value>Scrapy</value>
+<value>Shawn</value>
 </property>
 
 <property>
@@ -23,6 +23,33 @@ It is a useful setting for search engines build for certain national group.
 <value>utf-8</value>
 <description>The character encoding to fall back to when no other information
 is available</description>
+</property>
+
+<property>
+<name>fetcher.parse</name>
+<value>false</value>
+<description>If true, fetcher will parse content.Default is false ,which means that a separate parsing step
+is required after fetching is finished.</description>
+</property>
+
+<property>
+  <name>http.content.limit</name>
+  <value>65536</value>
+  <description>max size of acceptable http body</description>
+</property>
+
+<property>
+<name>db.signature.class</name>
+<value>org.apache.nutch.crawl.TextProfileSignature</value>
+<description> By default the signature of a page is built both with its content and
+ http headers returned with the page.TextProfileSignature is designed to look only
+ at the text content of a page to build the signature</description>
+</property>
+
+<property>
+<name>db.fetch.interval.default</name>
+<value>1000</value>
+<description>doc fetch time interval(seconds),default value is 30days(25600sec)</description>
 </property>
 
 <property>

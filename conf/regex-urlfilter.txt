@@ -36,4 +36,9 @@
 -.*(/[^/]+)/[^/]+\1/[^/]+\1/
 
 # accept anything else
-+.
+#+^http://http://search.51job.com/job/([0-9]*),c.html
+#+^http://search.51job.com/jobsearch/search_result.php?(.*)
+#+^^http://search.51job.com/list/(.*).html?(.*)
++^http://sou.zhaopin.com/jobs/searchresult.ashx(.*)
++^http://jobs.zhaopin.com/(.*).htm
+^http://sou.zhaopin.com/jobs/searchresult.ashx(\\?p=[0-9]*$)";
